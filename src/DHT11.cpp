@@ -84,6 +84,44 @@ byte DHT11::readByte()
   return value;
 }
 
+// Converts Temperature to fahrenheit
+float DHT11::convertToFahrenheit(float Temp)
+{
+  float fT = (Temp * 1.8) + 32;
+  return fT;
+}
+// Converts Temperature to Celsius
+float DHT11::convertToCelsius(float FTemp)
+{
+  float cT = (FTemp - 32) * 5/9;
+  return cT;
+}
+// Computes Heat Index
+float DHT11::computeHeatIndex(float Temp, float rH, bool isFahrenheit)
+{
+  if(!isFahrenheit){
+    float T = convertToFahrenheit(Temp);
+  }
+  float T = Temp;
+  float RH = rH;
+  float Hi;
+  Hi = 0.5*(T+61.0+((T-68.0)*1.2)+(RH*0.094));
+  if(Hi > 79){
+    Hi =  -42.379+2.04901523*T+10.14333127*RH-.22475541*T*RH-.00683783
+          *pow(T, 2)-.05481717*pow(RH, 2)+.00122874*pow(T, 2)*RH+.00085282*T
+          *pow(RH,2)-.00000199*pow(T, 2)*pow(RH,2);
+  }
+  if((RH <= 13.) && (T >= 80.) && (T <= 112.)){
+    Hi -= ((13-RH)/4)*sqrt(17-abs(T-95)/17);
+  } else if((RH >= 85.) && (T >= 80.) && (T <= 87.)){
+    Hi += ((RH-85)/10)*((87-T)/5);
+  } 
+
+  return isFahrenheit ? Hi : convertToCelsius(Hi);
+  
+}
+
+
 // Sends the start signal to the sensor.
 void DHT11::startSignal()
 {
