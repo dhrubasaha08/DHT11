@@ -1,21 +1,35 @@
+/**
+ * DHT11 Humidity Reader for Arduino
+ * This sketch reads humidity data from the DHT11 sensor and prints the value to the serial port.
+ * It also handles potential error states that might occur during reading.
+ *
+ * Author: Dhruba Saha
+ * Version: 2.0.0
+ * License: MIT
+ */
+
+// Include the DHT11 library for interfacing with the sensor.
 #include <DHT11.h>
 
-// Create an instance of the DHT11 class and set the digital I/O pin.
+// Create an instance of the DHT11 class. The sensor is connected to digital I/O pin 2.
 DHT11 dht11(2);
 
 void setup()
 {
-    // Initialize serial communication at 115200 baud.
-    Serial.begin(115200);
+    // Initialize serial communication to allow debugging and data readout.
+    // Using a baud rate of 9600 bps.
+    Serial.begin(9600);
 }
 
 void loop()
 {
-    // Read the humidity from the sensor.
-    float humidity = dht11.readHumidity();
+    // Attempt to read the humidity value from the DHT11 sensor.
+    int humidity = dht11.readHumidity();
 
-    // If the humidity reading was successful, print it to the serial monitor.
-    if (humidity != -1)
+    // Check the result of the reading.
+    // If there's no error, print the humidity value.
+    // If there's an error, print the appropriate error message.
+    if (humidity != DHT11::ERROR_CHECKSUM && humidity != DHT11::ERROR_TIMEOUT)
     {
         Serial.print("Humidity: ");
         Serial.print(humidity);
@@ -23,10 +37,9 @@ void loop()
     }
     else
     {
-        // If the humidity reading failed, print an error message.
-        Serial.println("Error reading humidity");
+        Serial.println(DHT11::getErrorString(humidity));
     }
 
-    // Wait for 2 seconds before the next reading.
-    delay(2000);
+    // Wait for 1 seconds before the next reading.
+    delay(1000);
 }
