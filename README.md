@@ -44,6 +44,7 @@ This Arduino library is designed for the DHT11 temperature and humidity sensor. 
 - Introduced the [`CONTRIBUTING.md`](CONTRIBUTING.md) file to guide contributors on how to effectively contribute to the library.
 - Added a [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) to establish community guidelines and expectations for behavior.
 - Introduced the [`ReadPlot`](/examples/ReadPlot/ReadPlot.ino) example which uses the Arduino Serial Plotter to display temperature and humidity data. This example provides a visual representation of the sensor's readings, making it easier to monitor environmental conditions in real-time.
+- Added ESP32/ESP8266 compatibility.
 
 ## How It Works
 
