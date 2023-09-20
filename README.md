@@ -137,16 +137,16 @@ Remember to use a pull-up resistor (typically 10kΩ) between the VCC and Data pi
 
 All examples provided use Arduino UNO's digital pin 2 as the default connection to the DHT11 sensor's data pin. Modify this in the code if using a different pin.
 
-- **[Read Humidity](examples/ReadHumidity)**  
+- **[Read Humidity](examples/ReadHumidity/ReadHumidity.ino)**  
   This example demonstrates how to simply read the humidity value from the DHT11 sensor and display it on the Arduino Serial Monitor. It's a basic introduction to using the library to get humidity data.
 
-- **[Read Temperature and Humidity](examples/ReadTempAndHumidity)**  
+- **[Read Temperature and Humidity](examples/ReadTempAndHumidity/ReadTempAndHumidity.ino)**  
   A more comprehensive example that shows how to read both temperature and humidity values from the DHT11 sensor. Results are displayed on the Arduino Serial Monitor, giving users a complete view of the environment.
 
-- **[Read Temperature](examples/ReadTemperature)**  
+- **[Read Temperature](examples/ReadTemperature/ReadTemperature.ino)**  
   Similar to the 'Read Humidity' example, but focused solely on reading and displaying the temperature value from the DHT11 sensor. It provides a straightforward way to monitor temperature using the library.
 
-- **[Read Plot](examples/ReadPlot/)**  
+- **[Read Plot](examples/ReadPlot/ReadPlot.ino)**  
   A visually interactive example that uses the Arduino Serial Plotter to graphically display temperature and humidity data in real-time. This is perfect for those who want a visual representation and trend analysis of the sensor's readings.
 
 ## Error Handling
