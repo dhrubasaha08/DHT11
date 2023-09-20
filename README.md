@@ -198,8 +198,8 @@ For translating these error codes to human-readable strings, the library offers 
 The library has been tested and confirmed to work on the following boards:
 
 - Arduino Uno R3 (ATmega328P - AVR architecture)
-- `*` NodeMCU ESP32S v1.1 **`ESP-WROOM-32`** (Tensilica Xtensa LX6 - xtensa architecture)
-- `*` NodeMCU ESP8266 v1.0 **`ESP8266MOD`** (Tensilica Xtensa LX106 - xtensa architecture)
+- NodeMCU ESP32S v1.1 **`ESP-WROOM-32`** (Tensilica Xtensa LX6 - xtensa architecture) `*`
+- NodeMCU ESP8266 v1.0 **`ESP8266MOD`** (Tensilica Xtensa LX106 - xtensa architecture) `*`
 
 `*` For xtensa-based boards (ESP32 and ESP8266), a delay is required between consecutive method calls for optimal performance. Check [Examples](/examples/) for the implementation details.
 
