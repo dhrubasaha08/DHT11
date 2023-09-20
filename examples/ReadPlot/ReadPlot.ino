@@ -10,7 +10,10 @@
 // Include the DHT11 library for interfacing with the sensor.
 #include <DHT11.h>
 
-// Create an instance of the DHT11 class. The sensor is connected to digital I/O pin 2.
+// Create an instance of the DHT11 class.
+// - For Arduino: Connect the sensor to Digital I/O Pin 2.
+// - For ESP32: Connect the sensor to pin GPIO2 or P2.
+// - For ESP8266: Connect the sensor to GPIO2 or D4.
 DHT11 dht11(2);
 
 void setup()
@@ -24,6 +27,11 @@ void loop()
 {
     // Attempt to read the temperature and humidity values from the DHT11 sensor.
     int temperature = dht11.readTemperature();
+
+    // If using ESP32 or ESP8266 (xtensa architecture), uncomment the delay below.
+    // This ensures stable readings when calling methods consecutively.
+    // delay(50);
+
     int humidity = dht11.readHumidity();
 
     // Check the results of the readings.

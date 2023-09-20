@@ -11,7 +11,10 @@
 // Include the DHT11 library for interfacing with the sensor.
 #include <DHT11.h>
 
-// Create an instance of the DHT11 class. The sensor is connected to digital I/O pin 2.
+// Create an instance of the DHT11 class.
+// - For Arduino: Connect the sensor to Digital I/O Pin 2.
+// - For ESP32: Connect the sensor to pin GPIO2 or P2.
+// - For ESP8266: Connect the sensor to GPIO2 or D4.
 DHT11 dht11(2);
 
 void setup()
