@@ -3,7 +3,7 @@
 ## Table of Contents
 
 - [Introduction](#introduction)
-- [Version 2.0.0 Updates](#version-200-updates)
+- [v2.0.0 Updates](#v200-updates)
 - [How It Works](#how-it-works)
   - [Internal Protocol Handling](#internal-protocol-handling)
 - [Features](#features)
@@ -12,7 +12,7 @@
     - [Installing Manually from GitHub](#installing-manually-from-github)
 - [Usage](#usage)
   - [Basic Usage](#basic-usage)
-  - [New Methods in Version 2.0.0](#new-methods-in-version-200)
+  - [New Methods in v2.0.0](#new-methods-in-v200)
   - [Wiring Details](#wiring-details)
 - [Examples](#examples)
 - [Error Handling](#error-handling)
@@ -35,7 +35,7 @@ This Arduino library is designed for the DHT11 temperature and humidity sensor. 
 
 **License:** [MIT](/LICENSE)
 
-## Version 2.0.0 Updates
+## v2.0.0 Updates
 
 - Changed the return type of `readTemperature()` and `readHumidity()` methods from `float` to `int`. This aligns with the DHT11 sensor's 1-degree resolution.
 - Enhanced code documentation for easier maintenance and better readability.
@@ -118,7 +118,7 @@ This library abstracts these complexities, allowing users to easily read tempera
 - Create an instance of the DHT11 class, specifying the digital pin connected to the sensor's data pin.
 - Use `readTemperature()` and `readHumidity()` methods to read the data.
 
-### New Methods in Version 2.0.0
+### New Methods in v2.0.0
 
 - `getErrorString(int errorCode)`: Returns a human-readable error message based on the provided error code.
 
