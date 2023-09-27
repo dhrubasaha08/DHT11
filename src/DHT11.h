@@ -48,6 +48,7 @@ public:
   // Constants to represent error codes.
   static const int ERROR_CHECKSUM = 254;   // Error code indicating checksum mismatch.
   static const int ERROR_TIMEOUT = 253;    // Error code indicating a timeout occurred during reading.
+  static const int ERROR_TOOFREQUENT = 252; // Error code indicating that polling frequency is too high
   static const int TIMEOUT_DURATION = 300; // Duration (in milliseconds) to wait before timing out.
 
   /**
@@ -62,14 +63,16 @@ private:
   int _pin; // Pin number used for communication with the DHT11 sensor.
   int _temperature; // Holds the last known value of the Temperature.
   int _humidity; // Holds the last known value of the Humidity.
-  long _lastPollTime; //Value of millis() when sensor last polled.  DHT11 cannot be polled faster than 1Hz
+  long _lastPollTime = 0; //Value of millis() when sensor last polled.  DHT11 cannot be polled faster than 1Hz
   static const int _pollTime = 1000;
 
   /**
    * Reads the Temperature and Humidity data from the DHT11 and saves them to the private variables
    * _temperature and _humidity
+   *
+   * @return: Returns 0 or an error code
    */
-  void readSensor();
+  int readSensor();
 
   /**
    * Reads a byte of data from the DHT11 sensor.
