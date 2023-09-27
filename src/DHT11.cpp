@@ -5,6 +5,7 @@
  * Author: Dhruba Saha
  * Version: 2.0.0
  * License: MIT
+ * Modified: John Kennedy
  */
 
 #include "DHT11.h"
@@ -20,94 +21,81 @@ DHT11::DHT11(int pin)
   _pin = pin;
   pinMode(_pin, OUTPUT);
   digitalWrite(_pin, HIGH);
+  DHT11::readSensor();
 }
 
 /**
  * Reads and returns the temperature from the DHT11 sensor.
  *
- * @return: Temperature value in Celsius. Returns DHT11::ERROR_TIMEOUT if reading times out.
- *          Returns DHT11::ERROR_CHECKSUM if checksum validation fails.
+ * @return: Temperature value in Celsius. 
  */
 int DHT11::readTemperature()
 {
-  delay(150);
-  byte data[5] = {0, 0, 0, 0, 0};
-  startSignal();
-  unsigned long timeout_start = millis();
-
-  while (digitalRead(_pin) == HIGH)
-  {
-    if (millis() - timeout_start > DHT11::TIMEOUT_DURATION)
-    {
-      return DHT11::ERROR_TIMEOUT;
-    }
-  }
-
-  if (digitalRead(_pin) == LOW)
-  {
-    delayMicroseconds(80);
-    if (digitalRead(_pin) == HIGH)
-    {
-      delayMicroseconds(80);
-      for (int i = 0; i < 5; i++)
-      {
-        data[i] = readByte();
-        if (data[i] == DHT11::ERROR_TIMEOUT)
-        {
-          return DHT11::ERROR_TIMEOUT;
-        }
-      }
-      if (data[4] == ((data[0] + data[1] + data[2] + data[3]) & 0xFF))
-      {
-        return data[2];
-      }
-    }
-  }
-  return DHT11::ERROR_CHECKSUM;
+  return DHT11::_temperature;
 }
 
 /**
  * Reads and returns the humidity from the DHT11 sensor.
  *
- * @return: Humidity value in percentage. Returns DHT11::ERROR_TIMEOUT if reading times out.
- *          Returns DHT11::ERROR_CHECKSUM if checksum validation fails.
+ * @return: Humidity value in percentage. 
  */
 int DHT11::readHumidity()
 {
-  delay(150);
-  byte data[5] = {0, 0, 0, 0, 0};
-  startSignal();
-  unsigned long timeout_start = millis();
+  return DHT11::_humidity;
+}
 
-  while (digitalRead(_pin) == HIGH)
+/**
+ * Reads and saves the humidity and temperature from the DHT11 sensor.
+ *
+ * @return: Returns 0 if all OK.
+ *          Returns DHT11::ERROR_TOOFREQUENT if poll frequency is too high
+ *          Returns DHT11::ERROR_TIMEOUT if reading times out.
+ *          Returns DHT11::ERROR_CHECKSUM if checksum validation fails.
+ */
+int DHT11::readSensor()
+{
+  if (millis() - DHT11::_pollTime > DHT11::_lastPollTime)
   {
-    if (millis() - timeout_start > DHT11::TIMEOUT_DURATION)
+    DHT11::_lastPollTime = millis();  
+    delay(150);
+    byte data[5] = {0, 0, 0, 0, 0};
+    startSignal();
+    unsigned long timeout_start = millis();
+
+    while (digitalRead(_pin) == HIGH)
     {
-      return DHT11::ERROR_TIMEOUT;
+      if (millis() - timeout_start > DHT11::TIMEOUT_DURATION)
+      {
+        return DHT11::ERROR_TIMEOUT;
+      }
     }
-  }
-
-  if (digitalRead(_pin) == LOW)
-  {
-    delayMicroseconds(80);
-    if (digitalRead(_pin) == HIGH)
+  
+    if (digitalRead(_pin) == LOW)
     {
       delayMicroseconds(80);
-      for (int i = 0; i < 5; i++)
+      if (digitalRead(_pin) == HIGH)
       {
-        data[i] = readByte();
-        if (data[i] == DHT11::ERROR_TIMEOUT)
+        delayMicroseconds(80);
+        for (int i = 0; i < 5; i++)
         {
-          return DHT11::ERROR_TIMEOUT;
+          data[i] = readByte();
+          if (data[i] == DHT11::ERROR_TIMEOUT)
+          {
+            return DHT11::ERROR_TIMEOUT;
+          }
+        }
+        if (data[4] == ((data[0] + data[1] + data[2] + data[3]) & 0xFF))
+        {
+          DHT11::_temperature = data[2];
+          DHT11::_humidity = data[0];
+          return 0;
         }
       }
-      if (data[4] == ((data[0] + data[1] + data[2] + data[3]) & 0xFF))
-      {
-        return data[0];
-      }
     }
+    return DHT11::ERROR_CHECKSUM;
+  } else {
+    return DHT11::ERROR_TOOFREQUENT;
   }
-  return DHT11::ERROR_CHECKSUM;
 }
 
 /**
