@@ -30,6 +30,11 @@ public:
   DHT11(int pin);
 
   /**
+   * Optional Initialiser
+   */
+  int begin();
+
+  /**
    * Reads and returns the humidity from the DHT11 sensor.
    *
    * @return: Humidity value in percentage. Returns DHT11_ERROR_TIMEOUT if reading times out.
