@@ -6,6 +6,7 @@
  * Author: Dhruba Saha
  * Version: 2.0.0
  * License: MIT
+ * Modified: John Kennedy
  */
 
 #ifndef DHT11_h
@@ -59,6 +60,16 @@ public:
 
 private:
   int _pin; // Pin number used for communication with the DHT11 sensor.
+  int _temperature; // Holds the last known value of the Temperature.
+  int _humidity; // Holds the last known value of the Humidity.
+  long _lastPollTime; //Value of millis() when sensor last polled.  DHT11 cannot be polled faster than 1Hz
+  static const int _pollTime = 1000;
+
+  /**
+   * Reads the Temperature and Humidity data from the DHT11 and saves them to the private variables
+   * _temperature and _humidity
+   */
+  void readSensor();
 
   /**
    * Reads a byte of data from the DHT11 sensor.
