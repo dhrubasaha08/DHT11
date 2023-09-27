@@ -21,7 +21,16 @@ DHT11::DHT11(int pin)
   _pin = pin;
   pinMode(_pin, OUTPUT);
   digitalWrite(_pin, HIGH);
-  DHT11::readSensor();
+}
+
+/**
+ * Optional begin method to initialise the sensor values
+ *
+ * @return 0 if OK or Error code
+ */
+int DHT11::begin()
+{
+  readSensor();
 }
 
 /**
@@ -31,6 +40,7 @@ DHT11::DHT11(int pin)
  */
 int DHT11::readTemperature()
 {
+  readSensor();
   return DHT11::_temperature;
 }
 
@@ -41,6 +51,7 @@ int DHT11::readTemperature()
  */
 int DHT11::readHumidity()
 {
+  readSensor();
   return DHT11::_humidity;
 }
 
