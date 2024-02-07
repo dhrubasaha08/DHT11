@@ -3,7 +3,7 @@
  * Library for reading temperature and humidity from the DHT11 sensor.
  *
  * Author: Dhruba Saha
- * Version: 2.0.0
+ * Version: 2.1.0
  * License: MIT
  */
 
@@ -15,73 +15,43 @@
  *
  * @param pin: Digital pin number on the Arduino board to which the DHT11 sensor is connected.
  */
-DHT11::DHT11(int pin)
+DHT11::DHT11(int pin) : _pin(pin)
 {
-  _pin = pin;
   pinMode(_pin, OUTPUT);
   digitalWrite(_pin, HIGH);
 }
 
 /**
- * Reads and returns the temperature from the DHT11 sensor.
+ * Sets the delay between consecutive sensor readings.
+ * If this method is not called, a default delay of 500 milliseconds is used.
  *
- * @return: Temperature value in Celsius. Returns DHT11::ERROR_TIMEOUT if reading times out.
- *          Returns DHT11::ERROR_CHECKSUM if checksum validation fails.
+ * @param delay: Delay duration in milliseconds between sensor readings.
  */
-int DHT11::readTemperature()
+void DHT11::setDelay(unsigned long delay)
 {
-  delay(150);
-  byte data[5] = {0, 0, 0, 0, 0};
-  startSignal();
-  unsigned long timeout_start = millis();
-
-  while (digitalRead(_pin) == HIGH)
-  {
-    if (millis() - timeout_start > DHT11::TIMEOUT_DURATION)
-    {
-      return DHT11::ERROR_TIMEOUT;
-    }
-  }
-
-  if (digitalRead(_pin) == LOW)
-  {
-    delayMicroseconds(80);
-    if (digitalRead(_pin) == HIGH)
-    {
-      delayMicroseconds(80);
-      for (int i = 0; i < 5; i++)
-      {
-        data[i] = readByte();
-        if (data[i] == DHT11::ERROR_TIMEOUT)
-        {
-          return DHT11::ERROR_TIMEOUT;
-        }
-      }
-      if (data[4] == ((data[0] + data[1] + data[2] + data[3]) & 0xFF))
-      {
-        return data[2];
-      }
-    }
-  }
-  return DHT11::ERROR_CHECKSUM;
+  _delayMS = delay;
 }
 
 /**
- * Reads and returns the humidity from the DHT11 sensor.
+ * Reads raw data from the DHT11 sensor.
+ * This method handles the direct communication with the DHT11 sensor and retrieves the raw data.
+ * It's used internally by the readTemperature, readHumidity, and readTemperatureHumidity methods.
  *
- * @return: Humidity value in percentage. Returns DHT11::ERROR_TIMEOUT if reading times out.
- *          Returns DHT11::ERROR_CHECKSUM if checksum validation fails.
+ * @param data: An array of bytes where the raw sensor data will be stored.
+ *              The array must be at least 5 bytes long, as the DHT11 sensor returns 5 bytes of data.
+ * @return: Returns 0 if the data is read successfully and the checksum matches.
+ *          Returns DHT11::ERROR_TIMEOUT if the sensor does not respond or communication times out.
+ *          Returns DHT11::ERROR_CHECKSUM if the data is read but the checksum does not match.
  */
-int DHT11::readHumidity()
+int DHT11::readRawData(byte data[5])
 {
-  delay(150);
-  byte data[5] = {0, 0, 0, 0, 0};
+  delay(_delayMS);
   startSignal();
   unsigned long timeout_start = millis();
 
   while (digitalRead(_pin) == HIGH)
   {
-    if (millis() - timeout_start > DHT11::TIMEOUT_DURATION)
+    if (millis() - timeout_start > TIMEOUT_DURATION)
     {
       return DHT11::ERROR_TIMEOUT;
     }
@@ -101,13 +71,18 @@ int DHT11::readHumidity()
           return DHT11::ERROR_TIMEOUT;
         }
       }
+
       if (data[4] == ((data[0] + data[1] + data[2] + data[3]) & 0xFF))
       {
-        return data[0];
+        return 0; // Success
+      }
+      else
+      {
+        return DHT11::ERROR_CHECKSUM;
       }
     }
   }
-  return DHT11::ERROR_CHECKSUM;
+  return DHT11::ERROR_TIMEOUT;
 }
 
 /**
@@ -150,6 +125,68 @@ void DHT11::startSignal()
 }
 
 /**
+ * Reads and returns the temperature from the DHT11 sensor.
+ * Utilizes the readRawData method to retrieve raw data from the sensor and then extracts
+ * the temperature from the data array.
+ *
+ * @return: Temperature value in Celsius. Returns DHT11::ERROR_TIMEOUT if reading times out,
+ *          or DHT11::ERROR_CHECKSUM if checksum validation fails.
+ */
+int DHT11::readTemperature()
+{
+  byte data[5];
+  int error = readRawData(data);
+  if (error != 0)
+  {
+    return error;
+  }
+  return data[2];
+}
+
+/**
+ * Reads and returns the humidity from the DHT11 sensor.
+ * Utilizes the readRawData method to retrieve raw data from the sensor and then extracts
+ * the humidity from the data array.
+ *
+ * @return: Humidity value in percentage. Returns DHT11::ERROR_TIMEOUT if reading times out,
+ *          or DHT11::ERROR_CHECKSUM if checksum validation fails.
+ */
+int DHT11::readHumidity()
+{
+  byte data[5];
+  int error = readRawData(data);
+  if (error != 0)
+  {
+    return error;
+  }
+  return data[0];
+}
+
+/**
+ * Reads and returns the temperature and humidity from the DHT11 sensor.
+ * Utilizes the readRawData method to retrieve raw data from the sensor and then extracts
+ * both temperature and humidity from the data array.
+ *
+ * @param temperature: Reference to a variable where the temperature value will be stored.
+ * @param humidity: Reference to a variable where the humidity value will be stored.
+ * @return: An integer representing the status of the read operation.
+ *          Returns 0 if the reading is successful, DHT11::ERROR_TIMEOUT if a timeout occurs,
+ *          or DHT11::ERROR_CHECKSUM if a checksum error occurs.
+ */
+int DHT11::readTemperatureHumidity(int &temperature, int &humidity)
+{
+  byte data[5];
+  int error = readRawData(data);
+  if (error != 0)
+  {
+    return error;
+  }
+  humidity = data[0];
+  temperature = data[2];
+  return 0; // Indicate success
+}
+
+/**
  * Returns a human-readable error message based on the provided error code.
  * This method facilitates easier debugging and user feedback by translating
  * numeric error codes into descriptive strings.
@@ -162,10 +199,10 @@ String DHT11::getErrorString(int errorCode)
   switch (errorCode)
   {
   case DHT11::ERROR_TIMEOUT:
-    return "Error: Reading from DHT11 timed out.";
+    return "Error 253 Reading from DHT11 timed out.";
   case DHT11::ERROR_CHECKSUM:
-    return "Error: Checksum mismatch while reading from DHT11.";
+    return "Error 254 Checksum mismatch while reading from DHT11.";
   default:
-    return "Error: Unknown error code.";
+    return "Error Unknown.";
   }
 }

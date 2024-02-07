@@ -1,10 +1,10 @@
 /**
- * DHT11 Temperature Reader for Arduino
+ * DHT11 Temperature Reader
  * This sketch reads temperature data from the DHT11 sensor and prints the value to the serial port.
  * It also handles potential error states that might occur during reading.
  *
  * Author: Dhruba Saha
- * Version: 2.0.0
+ * Version: 2.1.0
  * License: MIT
  */
 
@@ -17,32 +17,28 @@
 // - For ESP8266: Connect the sensor to GPIO2 or D4.
 DHT11 dht11(2);
 
-void setup()
-{
+void setup() {
     // Initialize serial communication to allow debugging and data readout.
     // Using a baud rate of 9600 bps.
     Serial.begin(9600);
+    
+    // Uncomment the line below to set a custom delay between sensor readings (in milliseconds).
+    // dht11.setDelay(500); // Set this to the desired delay. Default is 500ms.
 }
 
-void loop()
-{
+void loop() {
     // Attempt to read the temperature value from the DHT11 sensor.
     int temperature = dht11.readTemperature();
 
     // Check the result of the reading.
     // If there's no error, print the temperature value.
     // If there's an error, print the appropriate error message.
-    if (temperature != DHT11::ERROR_CHECKSUM && temperature != DHT11::ERROR_TIMEOUT)
-    {
+    if (temperature != DHT11::ERROR_CHECKSUM && temperature != DHT11::ERROR_TIMEOUT) {
         Serial.print("Temperature: ");
         Serial.print(temperature);
         Serial.println(" °C");
-    }
-    else
-    {
+    } else {
+        // Print error message based on the error code.
         Serial.println(DHT11::getErrorString(temperature));
     }
-
-    // Wait for 1 seconds before the next reading.
-    delay(1000);
 }
