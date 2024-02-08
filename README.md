@@ -1,42 +1,59 @@
 # DHT11 Arduino Library
+![Static Badge](https://img.shields.io/badge/Author-Dhruba%20Saha-red?link=https%3A%2F%2Fgithub.com%2Fdhrubasaha08)
+![GitHub Release](https://img.shields.io/github/v/release/dhrubasaha08/DHT11)
+[![GitHub](https://img.shields.io/github/license/dhrubasaha08/DHT11)](LICENSE) 
+[![GitHub contributors](https://img.shields.io/github/contributors/dhrubasaha08/DHT11)](https://github.com/dhrubasaha08/DHT11/graphs/contributors) 
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/dhrubasaha08/DHT11/total)
 
 ## Table of Contents
 
-- [Introduction](#introduction)
-- [v2.0.0 Updates](#v200-updates)
-- [How It Works](#how-it-works)
-  - [Internal Protocol Handling](#internal-protocol-handling)
-- [Features](#features)
-- [Installation](#installation)
+- [DHT11 Arduino Library](#dht11-arduino-library)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Updates](#updates)
+    - [v2.1.0 Hotfix `Latest`](#v210-hotfix-latest)
+    - [v2.0.0 Update](#v200-update)
+  - [How It Works](#how-it-works)
+    - [Internal Protocol Handling](#internal-protocol-handling)
+  - [Features](#features)
+  - [Installation](#installation)
     - [Arduino IDE Library Manager](#arduino-ide-library-manager)
     - [Installing Manually from GitHub](#installing-manually-from-github)
-- [Usage](#usage)
-  - [Basic Usage](#basic-usage)
-  - [New Methods in v2.0.0](#new-methods-in-v200)
-  - [Wiring Details](#wiring-details)
-- [Examples](#examples)
-- [Error Handling](#error-handling)
-- [Troubleshooting](#troubleshooting)
-- [FAQ](#faq)
-- [Compatibility](#compatibility)
-  - [Contribute by Testing](#contribute-by-testing)
-- [Contributing](#contributing)
-- [Code of Conduct](#code-of-conduct)
-- [License](#license)
-- [External References](#external-references)
+  - [Usage](#usage)
+    - [Basic Usage](#basic-usage)
+    - [New Methods](#new-methods)
+    - [Wiring Details](#wiring-details)
+  - [Examples](#examples)
+  - [Error Handling](#error-handling)
+  - [Troubleshooting](#troubleshooting)
+  - [FAQ](#faq)
+  - [Compatibility](#compatibility)
+    - [Contribute by Testing](#contribute-by-testing)
+  - [Contributing](#contributing)
+  - [Code of Conduct](#code-of-conduct)
+  - [License](#license)
+  - [External References](#external-references)
 
 ## Introduction
-
 This Arduino library is designed for the DHT11 temperature and humidity sensor. It simplifies the process of reading temperature and humidity data, making it easy to integrate the DHT11 sensor into your Arduino projects.
 
 **Author:** [Dhruba Saha](https://github.com/dhrubasaha08)
 
-**Version:** 2.0.0
+**Version:** 2.1.0
 
 **License:** [MIT](/LICENSE)
 
-## v2.0.0 Updates
+## Updates
 
+### v2.1.0 Hotfix `Latest`
+- Introduced the `readTemperatureHumidity(int &temperature, int &humidity)` method, allowing for efficient simultaneous reading of temperature and humidity, streamlining the data acquisition process.
+- Refactored the internal data reading process, reducing code repetition and improving maintainability.
+- Enhanced error handling: Now, specific error codes are returned from the `readTemperatureHumidity` method, making it consistent with the `readTemperature` and `readHumidity` methods.
+- Documentation updated to reflect the new changes and provide clear guidance on using the new library version.
+
+*Note: The updates in version 2.1.0 are backward compatible with the previous versions(v2.x.x), ensuring a smooth transition for existing projects.*
+
+### v2.0.0 Update
 - Changed the return type of `readTemperature()` and `readHumidity()` methods from `float` to `int`. This aligns with the DHT11 sensor's 1-degree resolution.
 - Enhanced code documentation for easier maintenance and better readability.
 - Added the `getErrorString` method to return human-readable error messages based on error codes.
@@ -117,10 +134,12 @@ This library abstracts these complexities, allowing users to easily read tempera
 - Include the `DHT11.h` header file.
 - Create an instance of the DHT11 class, specifying the digital pin connected to the sensor's data pin.
 - Use `readTemperature()` and `readHumidity()` methods to read the data.
-
-### New Methods in v2.0.0
-
 - `getErrorString(int errorCode)`: Returns a human-readable error message based on the provided error code.
+
+### New Methods
+
+- `readTemperatureHumidity(int &temperature, int &humidity)`: This new method allows for simultaneous reading of temperature and humidity, reducing the complexity and time required for separate readings. It returns an `int` indicating the success or specific error encountered during the operation.
+
 
 ### Wiring Details
 
@@ -131,7 +150,7 @@ The DHT11 sensor has three or four pins, depending on the variant:
 - **Ground (GND)**: Connect to the ground of your MCU.
 - **NC (No Connect)**: Some variants have this pin. It is not used and can be left unconnected.
 
-Remember to use a pull-up resistor (typically 10kΩ) between the VCC and Data pins for reliable communication.
+Remember to use a pull-up resistor (typically 10kΩ) between the VCC and Data pins for reliable communication.(Optional)
 
 ## Examples
 
@@ -153,7 +172,7 @@ All examples provided use Arduino UNO's digital pin 2 as the default connection 
 
 The library provides clear error handling mechanisms. When reading data:
 
-- If there's a timeout while waiting for a response from the sensor, the methods `readTemperature()` and `readHumidity()` return the value `DHT11::ERROR_TIMEOUT`.
+- If there's a timeout while waiting for a response from the sensor, the methods `readTemperature()` and `readHumidity()` & return the value `DHT11::ERROR_TIMEOUT`. <!-- TODO update for int readTemperatureHumidity(int &temperature, int &humidity); -->
 - If there's a checksum mismatch indicating data corruption, the methods return the value `DHT11::ERROR_CHECKSUM`.
 
 For translating these error codes to human-readable strings, the library offers the `DHT11::getErrorString(int errorCode)` method.
@@ -201,8 +220,6 @@ The library has been tested and confirmed to work on the following boards:
 - Arduino Uno R3 (ATmega328P - AVR architecture)
 - NodeMCU ESP32S v1.1 **`ESP-WROOM-32`** (Tensilica Xtensa LX6 - xtensa architecture) `*`
 - NodeMCU ESP8266 v1.0 **`ESP8266MOD`** (Tensilica Xtensa LX106 - xtensa architecture) `*`
-
-`*` For xtensa-based boards (ESP32 and ESP8266), a delay is required between consecutive method calls for optimal performance. Check [Examples](/examples/) for the implementation details.
 
 Given the vast number of boards and architectures available, it's a challenge for a solo developer to test on all. Community contributions in terms of compatibility testing are highly encouraged.
 

@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-This section lists the versions of the DHT11 library that are currently receiving security updates.
+This section lists the versions of the DHT11 library that are currently receiving updates.
 
 | Version | Supported          |
 | ------- | ------------------ |
