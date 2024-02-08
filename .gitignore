@@ -11,9 +11,6 @@
 # License: MIT
 #
 
-# Ignore directories for arduino-lint tool
-arduino-lint_1.2.1/
-
 # Ignore editor settings and temporary files
 *.swp
 *.swo
