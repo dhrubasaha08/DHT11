@@ -1,4 +1,4 @@
-name: Arduino Library Lint
+name: Arduino Library CI
 
 on:
   pull_request:
@@ -6,19 +6,29 @@ on:
       - main
 
 jobs:
-  arduino-lint:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Arduino CLI
-        uses: arduino/setup-arduino-cli@v1.0.0
-
-      - name: Install arduino-lint
+      - name: Install Arduino CLI
         run: |
-          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-lint/main/etc/install.sh | sh
+          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR=$HOME/bin sh
+          echo "$HOME/bin" >> $GITHUB_PATH
+
+      - name: Configure Arduino CLI
+        run: |
+          arduino-cli config init
+          arduino-cli core update-index
+
+      - name: Install Arduino CLI specific version
+        run: |
+          arduino-cli update
+          arduino-cli version
 
       - name: Run arduino-lint
         run: |
-          ./bin/arduino-lint --compliance strict --library-manager update --recursive .
+          arduino-cli lib install "ArduinoJson"
+          arduino-cli lib install "PubSubClient"
+          arduino-cli lib list
