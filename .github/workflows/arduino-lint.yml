@@ -1,0 +1,24 @@
+name: Arduino Library Lint
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  arduino-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Arduino CLI
+        uses: arduino/setup-arduino-cli@v1.0.0
+
+      - name: Install arduino-lint
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-lint/main/etc/install.sh | sh
+
+      - name: Run arduino-lint
+        run: |
+          ./bin/arduino-lint --compliance strict --library-manager update --recursive .
