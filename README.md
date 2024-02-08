@@ -4,6 +4,7 @@
 [![GitHub](https://img.shields.io/github/license/dhrubasaha08/DHT11)](LICENSE) 
 [![GitHub contributors](https://img.shields.io/github/contributors/dhrubasaha08/DHT11)](https://github.com/dhrubasaha08/DHT11/graphs/contributors) 
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/dhrubasaha08/DHT11/total)
+[![DOI](https://zenodo.org/badge/647120558.svg)](https://zenodo.org/doi/10.5281/zenodo.10633700)
 
 ## Table of Contents
 
