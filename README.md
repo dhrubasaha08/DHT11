@@ -245,6 +245,23 @@ To understand the community guidelines and expected behavior, please refer to th
 
 This library is licensed under the `MIT` License. See the [`LICENSE`](LICENSE) file for more details.
 
+## Citation
+
+To cite this library in your projects, please use the following BibTeX entry, and refer to the Zenodo badge above for the most current DOI:
+
+```bibtex
+@software{dht11_arduino_library,
+  author       = {Saha, Dhruba},
+  title        = {DHT11 Arduino Library},
+  year         = {2024},
+  doi          = {10.5281/zenodo.10633701},
+  version      = {v2.1.0},
+  publisher    = {Zenodo},
+  url          = {https://doi.org/10.5281/zenodo.10633701}
+}
+```
+
+
 ## External References
 
 - [`DHT11 Datasheet`](https://www.mouser.com/datasheet/2/758/DHT11-Technical-Data-Sheet-Translated-Version-1143054.pdf)
