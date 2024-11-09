@@ -37,6 +37,22 @@ public:
   void setDelay(unsigned long delay);
 
   /**
+   * Sets the delay for the MCU to pull the line low.
+   * If this method is not called, a default delay of 18 milliseconds is used.
+   *
+   * @param delay: Delay duration in milliseconds for the MCU to send a start signal.
+   */
+  void setStartSignalDelay(int delayMs);
+
+  /**
+   * Sets the delay for the MCU to pull the line high.
+   * If this method is not called, a default delay of 40 microseconds is used.
+   *
+   * @param delay: Delay duration in microseconds for MCU to send signal, that it's ready to receive a response.
+   */
+  void setHighSignalDelay(int delayUs);
+
+  /**
    * Reads and returns the humidity from the DHT11 sensor.
    *
    * @return: Humidity value in percentage. Returns DHT11_ERROR_TIMEOUT if reading times out.
@@ -77,6 +93,8 @@ public:
 private:
   int _pin;                     // Pin number used for communication with the DHT11 sensor.
   unsigned long _delayMS = 500; // Default delay in milliseconds between sensor readings.
+  int _startSignalDelay = 18; // Default delay in milliseconds for start signal
+  int _highSignalDelay = 40; // Default delay in microseconds for high signal
 
   /**
    * Private method to read raw data from the DHT11 sensor.

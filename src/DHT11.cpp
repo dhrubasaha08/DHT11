@@ -33,6 +33,28 @@ void DHT11::setDelay(unsigned long delay)
 }
 
 /**
+ * Sets a custom delay for the start signal in milliseconds.
+ * If not set, it defaults to 18 milliseconds.
+ *
+ * @param delayMs: The desired delay in milliseconds for the start signal.
+ */
+void DHT11::setStartSignalDelay(int delayMs)
+{
+  _startSignalDelay = delayMs;
+}
+
+/**
+ * Sets a custom delay for the high signal in microseconds.
+ * If not set, it defaults to 40 µs(microseconds).
+ *
+ * @param delayUs: The desired delay in microseconds for the high signal.
+ */
+void DHT11::setHighSignalDelay(int delayUs)
+{
+  _highSignalDelay = delayUs;
+}
+
+/**
  * Reads raw data from the DHT11 sensor.
  * This method handles the direct communication with the DHT11 sensor and retrieves the raw data.
  * It's used internally by the readTemperature, readHumidity, and readTemperatureHumidity methods.
@@ -118,9 +140,9 @@ void DHT11::startSignal()
 {
   pinMode(_pin, OUTPUT);
   digitalWrite(_pin, LOW);
-  delay(18);
+  delay(_startSignalDelay);
   digitalWrite(_pin, HIGH);
-  delayMicroseconds(40);
+  delayMicroseconds(_highSignalDelay);
   pinMode(_pin, INPUT);
 }
 
