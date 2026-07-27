@@ -63,14 +63,20 @@ int DHT11::readRawData(byte data[5])
     if (digitalRead(_pin) == HIGH)
     {
       delayMicroseconds(80);
+
+      // Disable interrupts before reading data to ensure precise timing
+      noInterrupts();
       for (int i = 0; i < 5; i++)
       {
-        data[i] = readByte();
-        if (data[i] == DHT11::ERROR_TIMEOUT)
+        int byteRead = readByte();
+        if (byteRead == -1)
         {
+          interrupts(); // Re-enable interrupts before returning
           return DHT11::ERROR_TIMEOUT;
         }
+        data[i] = byteRead;
       }
+      interrupts(); // Re-enable interrupts after reading
 
       if (data[4] == ((data[0] + data[1] + data[2] + data[3]) & 0xFF))
       {
@@ -88,23 +94,29 @@ int DHT11::readRawData(byte data[5])
 /**
  * Reads a byte of data from the DHT11 sensor during the communication process.
  *
- * @return: A byte of data read from the sensor.
+ * @return: A byte of data read from the sensor, or -1 if a timeout occurs.
  */
-byte DHT11::readByte()
+int DHT11::readByte()
 {
-  byte value = 0;
+  int value = 0;
 
   for (int i = 0; i < 8; i++)
   {
+    unsigned long loopCnt = 0;
     while (digitalRead(_pin) == LOW)
-      ;
+    {
+      if (loopCnt++ > 10000) return -1;
+    }
     delayMicroseconds(30);
     if (digitalRead(_pin) == HIGH)
     {
       value |= (1 << (7 - i));
     }
+    loopCnt = 0;
     while (digitalRead(_pin) == HIGH)
-      ;
+    {
+      if (loopCnt++ > 10000) return -1;
+    }
   }
   return value;
 }
