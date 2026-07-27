@@ -93,9 +93,9 @@ private:
   /**
    * Reads a byte of data from the DHT11 sensor.
    *
-   * @return: A byte of data read from the sensor.
+   * @return: A byte of data read from the sensor, or -1 if a timeout occurs.
    */
-  byte readByte();
+  int readByte();
 
   /**
    * Sends a start signal to the DHT11 sensor to initiate a data read.
